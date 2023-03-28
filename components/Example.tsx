@@ -3,6 +3,9 @@ import { Combobox, Dialog, Transition } from '@headlessui/react'
 import { RepositoryOption } from './RepositoryOption'
 import { FaceSmileIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
+import { useDebounce } from "usehooks-ts"
+import type { RepoOptionProps } from "../pages/api/search"
+
 type Repository = {
   id: string
   name: string
@@ -20,8 +23,16 @@ type Repository = {
 
 type APIResponse = { items: Repository[] }
 
+const filterRepos = () => {
+
+};
+
 export default function Example() {
   const [open, setOpen] = React.useState(true)
+  const [rawQuery, setRawQuery] = React.useState('')
+  const [repos, setRepos] = React.useState(
+    {}: RepoOptionProps
+  )
 
   React.useEffect(() => {
     if (!open) {
@@ -29,9 +40,28 @@ export default function Example() {
         setOpen(true)
       }, 500)
     }
-  }, [open])
 
-  const [rawQuery, setRawQuery] = React.useState('')
+    // fetch(`/api/search?q=${rawQuery}`)
+    //   .then((res) => {
+    //     if (res.ok) {
+    //       console.log(res.json())
+    //     }
+    //   });
+
+    setLoading(true);
+
+    fetch(`/api/search?q=${rawQuery}`)
+      .then(res => res.json())
+      .then((repos: APIResponse) => {
+
+        repos?.items?.slice(0, 10).forEach((ele) => {
+          
+        })
+      });
+
+  }, [open, rawQuery])
+
+  
   const query = rawQuery.toLowerCase().replace(/^[#>]/, '')
 
   return (
@@ -79,7 +109,7 @@ export default function Example() {
                   <Combobox.Input
                     className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-100 placeholder-gray-500 focus:ring-0 sm:text-sm focus:outline-0"
                     placeholder="Search GitHub repos..."
-                    onChange={(event) => setRawQuery(event.target.value)}
+                    onInput={(event: any) => setRawQuery(event.target.value)}
                   />
                 </div>
 
@@ -92,9 +122,10 @@ export default function Example() {
                       Repositories
                     </h2>
                     <ul className="-mx-4 mt-2 text-sm text-gray-700 space-y-0.5">
+                      {/* <RepositoryOption />
                       <RepositoryOption />
-                      <RepositoryOption />
-                      <RepositoryOption />
+                      <RepositoryOption /> */}
+                      {}
                     </ul>
                   </li>
                 </Combobox.Options>

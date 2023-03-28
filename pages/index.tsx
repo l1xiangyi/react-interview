@@ -12,6 +12,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <div className="absolute">
+
+        
+      </div>
+
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={bgImage}
